@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>MOCP</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="/static/css/style.css" rel="stylesheet">
+  </head>
+  <body>
+    <div class="background">
+      <div class="player">
+        <div class="infos">
+            <div class="title info">
+              {{ infos.title }}
+            </div>
+            <div class="artist info">
+              {{ infos.artist }}
+            </div>
+            <div class="album info">
+              {{ infos.album }}
+            </div>
+        </div>
+        <div class="center button_bar">
+          <div class="block">
+            <form action="/previous_song" method="POST">
+              <button class="button">Previous</button>
+            </form>
+          </div>
+          <div class="block">
+            <form action="/toggle_pause" method="POST">
+              <button class="button">Play</button>
+            </form>
+          </div>
+          <div class="block">
+            <form action="/next_song" method="POST">
+              <button class="button">Next</button>
+            </form>
+          </div>
+        </div>
+        <div id="myProgress">
+          <div id="myBar"></div>
+        </div>
+      </div>
+    </div>
+    <script>
+      var total_time = {{ infos.total_time|int }};
+      var current_time = {{ infos.current_time|int }};
+
+      function updateBar() {
+        let elem = document.getElementById("myBar");
+        let width = 100 * (current_time / total_time) + "%";
+        console.log("width", width);
+
+        elem.style.width = width;
+      }
+
+      updateBar();
+
+      setTimeout(function(){
+        window.location.reload(1);
+        updateBar();
+      }, 2000);
+
+    </script>
+  </body>
+</html>

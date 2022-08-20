@@ -1,0 +1,83 @@
+body {
+  background-color: #fe6182;
+  height: 1600px;
+}
+
+.player {
+  height: 600px;
+  width: 450px;
+  position: absolute;
+  top: 10%;
+  left: 50%;
+  -webkit-transform: translateX(-225px);
+          transform: translateX(-225px);
+  background-color: #111;
+  box-shadow: 10px 10px 30px 0px rgba(0,0,0,0.5), 0px 0px 40px 0px rgba(0,0,0,0.4);
+}
+
+.infos {
+  position: absolute;
+  top: 50px;
+  text-align: center;
+  margin: 10px;
+}
+
+.info {
+  margin: 20px;
+}
+
+.title {
+  font-size: 22px;
+  color: #ddd;
+}
+
+.artist {
+  font-size: 18px;
+  color: #aaa;
+}
+
+.album {
+  font-size: 14px;
+  color: #666;
+}
+
+.center {
+  margin: auto;
+  width: 100%;
+  text-align: center;
+}
+
+.button_bar {
+  position: absolute;
+  top: 280px;
+}
+
+.block {
+  display: inline-block;
+  border: none;
+  color: white;
+  padding: 14px 28px;
+  font-size: 16px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.button {
+  width: 80px;
+  height: 60px;
+  background-color: #fe6182;
+  color: #ddd;
+}
+
+#myProgress {
+  position: absolute;
+  top: 450px;
+  width: 100%;
+  background-color: #111;
+}
+
+#myBar {
+  width: 1%;
+  height: 10px;
+  background-color: #fe6182;
+}
