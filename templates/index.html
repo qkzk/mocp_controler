@@ -20,7 +20,7 @@
               {{ infos.album }}
             </div>
         </div>
-        <div class="center button_bar">
+        <div class="center" id="button_bar">
           <div class="block">
             <form action="/previous_song" method="POST">
               <button class="button">
@@ -45,6 +45,27 @@
                 Next
               </button>
             </form>
+          </div>
+        </div>
+        <div class="center" id="volume_bar">
+          <div class="block">
+            <form action="/volume_down" method="POST">
+              <button class="button">
+                Down
+              </button>
+            </form>
+          </div>
+          <div class="block">
+            <form action="/volume_up" method="POST">
+              <button class="button">
+                Up
+              </button>
+            </form>
+          </div>
+          <div class="block">
+              <button class="button">
+                {{ infos.volume }}%
+              </button>
           </div>
         </div>
         <div id="progress_bar">

@@ -17,7 +17,7 @@ body {
 
 .infos {
   position: absolute;
-  top: 50px;
+  top: 30px;
   text-align: center;
   margin: 10px;
 }
@@ -47,9 +47,14 @@ body {
   text-align: center;
 }
 
-.button_bar {
+#button_bar {
   position: absolute;
-  top: 280px;
+  top: 230px;
+}
+
+#volume_bar {
+  position: absolute;
+  top: 350px;
 }
 
 .block {
@@ -73,13 +78,13 @@ body {
 
 #progress_bar {
   position: absolute;
-  top: 450px;
+  top: 500px;
   width: 100%;
   background-color: #111;
 }
 
 #bar {
   width: 1%;
-  height: 10px;
+  height: 20px;
   background-color: #fe6182;
 }

@@ -38,6 +38,7 @@ class MocpInfos:
     album: str
     total_time: int
     current_time: int
+    volume: int
 
     @classmethod
     def from_infos(cls) -> MocpInfos:
@@ -45,6 +46,7 @@ class MocpInfos:
         lines = MocpControler.infos().splitlines()
         pairs = map(lambda line: line.split(":"), lines)
         dict_infos = {pair[0]: pair[1] for pair in pairs}
+        volume = int(MocpControler.get_volume())
         return cls(
             dict_infos.get("State", "PAUSE").strip() == "PLAY",
             dict_infos.get("Title", "Unknown title"),
@@ -52,6 +54,7 @@ class MocpInfos:
             dict_infos.get("Album", "Unknown album"),
             int(dict_infos.get("TotalSec", 1)),
             int(dict_infos.get("CurrentSec", 0)),
+            volume,
         )
 
     def update(self) -> None:
@@ -63,6 +66,7 @@ class MocpInfos:
         self.album = new.album
         self.total_time = new.total_time
         self.current_time = new.current_time
+        self.volume = new.volume
 
 
 class MocpControler:
@@ -81,6 +85,22 @@ class MocpControler:
     @staticmethod
     def infos() -> str:
         return run_command("mocp -i")
+
+    @staticmethod
+    def volume_up():
+        run_command("mocp -v +10")
+
+    @staticmethod
+    def volume_down():
+        run_command("mocp -v -10")
+
+    @staticmethod
+    def get_volume():
+        return run_command(
+            r"""pactl list sinks | grep '^[[:space:]]Volume:' | \
+head -n $(( $SINK + 1 )) | tail -n 1 | sed -e 's,.* \([0-9][0-9]*\)%.*,\1,'
+        """
+        )
 
 
 app = Flask(__name__)
@@ -107,6 +127,18 @@ def toggle_pause():
 @app.route("/next_song", methods=["POST"])
 def next_song():
     MocpControler.next_song()
+    return redirect(url_for("index"))
+
+
+@app.route("/volume_down", methods=["POST"])
+def volume_down():
+    MocpControler.volume_down()
+    return redirect(url_for("index"))
+
+
+@app.route("/volume_up", methods=["POST"])
+def volume_up():
+    MocpControler.volume_up()
     return redirect(url_for("index"))
 
 
