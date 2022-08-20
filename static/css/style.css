@@ -65,18 +65,20 @@ body {
 .button {
   width: 80px;
   height: 60px;
+  border: none;
   background-color: #fe6182;
   color: #ddd;
+  font-weight: bold;
 }
 
-#myProgress {
+#progress_bar {
   position: absolute;
   top: 450px;
   width: 100%;
   background-color: #111;
 }
 
-#myBar {
+#bar {
   width: 1%;
   height: 10px;
   background-color: #fe6182;

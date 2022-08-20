@@ -6,6 +6,10 @@ from flask import Flask, redirect, render_template, url_for
 
 
 def run_command(command: str) -> str:
+    """
+    Run a command and returns its stdout.
+    Raise a RuntimeError if the command returns an error.
+    """
     p = subprocess.Popen(
         command,
         shell=True,
@@ -22,6 +26,13 @@ def run_command(command: str) -> str:
 
 @dataclass
 class MocpInfos:
+    """
+    Holds the status of MOCP.
+    Since I can't find a way to get playlist infos from command line,
+    it just knows about the currently playing song.
+    """
+
+    is_playing: bool
     title: str
     artist: str
     album: str
@@ -30,19 +41,23 @@ class MocpInfos:
 
     @classmethod
     def from_infos(cls) -> MocpInfos:
+        """Return a new instance read from command line."""
         lines = MocpControler.infos().splitlines()
-        pairs = map(lambda line: line.split(":"), (line for line in lines))
+        pairs = map(lambda line: line.split(":"), lines)
         dict_infos = {pair[0]: pair[1] for pair in pairs}
         return cls(
-            dict_infos.get("Title", ""),
-            dict_infos.get("Artist", ""),
-            dict_infos.get("Album", ""),
+            dict_infos.get("State", "PAUSE").strip() == "PLAY",
+            dict_infos.get("Title", "Unknown title"),
+            dict_infos.get("Artist", "Unknown artist"),
+            dict_infos.get("Album", "Unknown album"),
             int(dict_infos.get("TotalSec", 1)),
             int(dict_infos.get("CurrentSec", 0)),
         )
 
-    def update(self):
+    def update(self) -> None:
+        """Update itself with new infos"""
         new = self.from_infos()
+        self.is_playing = new.is_playing
         self.title = new.title
         self.artist = new.artist
         self.album = new.album

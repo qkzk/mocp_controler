@@ -23,22 +23,32 @@
         <div class="center button_bar">
           <div class="block">
             <form action="/previous_song" method="POST">
-              <button class="button">Previous</button>
+              <button class="button">
+                Previous
+              </button>
             </form>
           </div>
           <div class="block">
             <form action="/toggle_pause" method="POST">
-              <button class="button">Play</button>
+              <button class="button">
+                {% if infos.is_playing %}
+                  Pause
+                {% else %}
+                  Play
+                {% endif %}
+              </button>
             </form>
           </div>
           <div class="block">
             <form action="/next_song" method="POST">
-              <button class="button">Next</button>
+              <button class="button">
+                Next
+              </button>
             </form>
           </div>
         </div>
-        <div id="myProgress">
-          <div id="myBar"></div>
+        <div id="progress_bar">
+          <div id="bar"></div>
         </div>
       </div>
     </div>
@@ -47,10 +57,8 @@
       var current_time = {{ infos.current_time|int }};
 
       function updateBar() {
-        let elem = document.getElementById("myBar");
+        let elem = document.getElementById("bar");
         let width = 100 * (current_time / total_time) + "%";
-        console.log("width", width);
-
         elem.style.width = width;
       }
 
