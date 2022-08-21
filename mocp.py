@@ -1,5 +1,5 @@
 from __future__ import annotations
-from dataclasses import dataclass
+import dataclasses
 import subprocess
 
 from flask import Flask, redirect, render_template, request, url_for
@@ -24,7 +24,7 @@ def run_command(command: str) -> str:
     return p.stdout.read().decode("utf-8")
 
 
-@dataclass
+@dataclasses.dataclass
 class MocpInfos:
     """
     Holds the status of MOCP.
@@ -58,15 +58,11 @@ class MocpInfos:
         )
 
     def update(self) -> None:
-        """Update itself with new infos"""
         new = self.from_infos()
-        self.is_playing = new.is_playing
-        self.title = new.title
-        self.artist = new.artist
-        self.album = new.album
-        self.total_time = new.total_time
-        self.current_time = new.current_time
-        self.volume = new.volume
+        new_dict = dataclasses.asdict(new)
+        for key, value in new_dict.items():
+            if hasattr(self, key):
+                setattr(self, key, value)
 
 
 class MocpControler:
