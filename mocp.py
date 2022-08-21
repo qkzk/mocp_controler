@@ -2,7 +2,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 import subprocess
 
-from flask import Flask, redirect, render_template, url_for
+from flask import Flask, redirect, render_template, request, url_for
 
 
 def run_command(command: str) -> str:
@@ -46,7 +46,7 @@ class MocpInfos:
         lines = MocpControler.infos().splitlines()
         pairs = map(lambda line: line.split(":"), lines)
         dict_infos = {pair[0]: pair[1] for pair in pairs}
-        volume = int(MocpControler.get_volume())
+        volume = MocpControler.get_volume()
         return cls(
             dict_infos.get("State", "PAUSE").strip() == "PLAY",
             dict_infos.get("Title", "Unknown title"),
@@ -87,19 +87,17 @@ class MocpControler:
         return run_command("mocp -i")
 
     @staticmethod
-    def volume_up():
-        run_command("mocp -v +10")
+    def set_volume(volume: str) -> None:
+        run_command(f"mocp -v {volume}")
 
     @staticmethod
-    def volume_down():
-        run_command("mocp -v -10")
-
-    @staticmethod
-    def get_volume():
-        return run_command(
-            r"""pactl list sinks | grep '^[[:space:]]Volume:' | \
+    def get_volume() -> int:
+        return int(
+            run_command(
+                r"""pactl list sinks | grep '^[[:space:]]Volume:' | \
 head -n $(( $SINK + 1 )) | tail -n 1 | sed -e 's,.* \([0-9][0-9]*\)%.*,\1,'
         """
+            )
         )
 
 
@@ -130,16 +128,12 @@ def next_song():
     return redirect(url_for("index"))
 
 
-@app.route("/volume_down", methods=["POST"])
-def volume_down():
-    MocpControler.volume_down()
-    return redirect(url_for("index"))
-
-
-@app.route("/volume_up", methods=["POST"])
-def volume_up():
-    MocpControler.volume_up()
-    return redirect(url_for("index"))
+@app.route("/set_volume", methods=["POST"])
+def set_volume():
+    if request.json is not None:
+        volume = request.json.get("volume", "0")
+        MocpControler.set_volume(volume)
+        return redirect(url_for("index"))
 
 
 infos = MocpInfos.from_infos()

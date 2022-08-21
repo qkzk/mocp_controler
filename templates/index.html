@@ -4,6 +4,7 @@
     <title>MOCP</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
     <link href="/static/css/style.css" rel="stylesheet">
   </head>
   <body>
@@ -24,7 +25,7 @@
           <div class="block">
             <form action="/previous_song" method="POST">
               <button class="button">
-                Previous
+                <i class="fa fa-step-backward fa-2x"></i>
               </button>
             </form>
           </div>
@@ -32,9 +33,9 @@
             <form action="/toggle_pause" method="POST">
               <button class="button">
                 {% if infos.is_playing %}
-                  Pause
+                  <i class="fa fa-pause fa-2x"></i>
                 {% else %}
-                  Play
+                  <i class="fa fa-play fa-2x"></i>
                 {% endif %}
               </button>
             </form>
@@ -42,40 +43,34 @@
           <div class="block">
             <form action="/next_song" method="POST">
               <button class="button">
-                Next
+                <i class="fa fa-step-forward fa-2x"></i>
               </button>
             </form>
-          </div>
-        </div>
-        <div class="center" id="volume_bar">
-          <div class="block">
-            <form action="/volume_down" method="POST">
-              <button class="button">
-                Down
-              </button>
-            </form>
-          </div>
-          <div class="block">
-            <form action="/volume_up" method="POST">
-              <button class="button">
-                Up
-              </button>
-            </form>
-          </div>
-          <div class="block">
-              <button class="button">
-                {{ infos.volume }}%
-              </button>
           </div>
         </div>
         <div id="progress_bar">
           <div id="bar"></div>
+        </div>
+        <div class="slider_container">
+          <i class="fa fa-volume-down"></i>
+          <input type="range" min="1" max="100"
+            value="{{ infos.volume }}" class="volume_slider" onchange="sendVolume()">
+          <i class="fa fa-volume-up"></i>
         </div>
       </div>
     </div>
     <script>
       var total_time = {{ infos.total_time|int }};
       var current_time = {{ infos.current_time|int }};
+
+      let volume_slider = document.querySelector(".volume_slider");
+
+      function sendVolume() {
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "/set_volume", true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send(JSON.stringify({volume: volume_slider.value}));
+      }
 
       function updateBar() {
         let elem = document.getElementById("bar");
@@ -85,7 +80,7 @@
 
       updateBar();
 
-      setTimeout(function(){
+      setTimeout(function() {
         window.location.reload(1);
         updateBar();
       }, 2000);

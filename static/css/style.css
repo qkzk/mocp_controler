@@ -88,3 +88,60 @@ body {
   height: 20px;
   background-color: #fe6182;
 }
+
+/* Define the slider width so that it scales properly */
+.slider_container {
+  position: absolute;
+  top: 380px;
+  width: 100%;
+  max-width: 450px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fe6182;
+}
+ 
+/* Modify the appearance of the slider */
+.volume_slider {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  height: 5px;
+  background: #fe6182;
+  color: #fe6182;
+}
+
+
+input[type='range'] {
+  background-color: #fe6182;
+}
+
+input[type='range']::-webkit-slider-thumb {
+  width: 10px;
+  -webkit-appearance: none;
+  height: 10px;
+  cursor: ew-resize;
+  background: #fe6182;
+  box-shadow: -4px 0 0 4px #fe6182;
+}
+ 
+.volume_slider {
+  width: 60%;
+  color: #fe6182;
+  background: #fe6182;
+}
+ 
+i.fa-volume-down,
+i.fa-volume-up {
+  padding: 10px;
+  color: #fe6182;
+}
+ 
+/* Change the mouse cursor to a pointer
+   when hovered over */
+i.fa-play,
+i.fa-pause,
+i.fa-step-forward,
+i.fa-step-backward {
+  cursor: pointer;
+}
