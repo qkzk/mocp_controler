@@ -58,6 +58,7 @@ class MocpInfos:
         )
 
     def update(self) -> None:
+        """Update self with new values"""
         new = self.from_infos()
         new_dict = dataclasses.asdict(new)
         for key, value in new_dict.items():
@@ -68,26 +69,35 @@ class MocpInfos:
 class MocpControler:
     @staticmethod
     def toggle_pause() -> None:
+        """Toggle MOCP between play and pause"""
         run_command("mocp -G")
 
     @staticmethod
     def previous_song() -> None:
+        """Play previous song in MOCP"""
         run_command("mocp -r")
 
     @staticmethod
     def next_song() -> None:
+        """Play next song in MOCP"""
         run_command("mocp -f")
 
     @staticmethod
     def infos() -> str:
+        """Returns currently playing song in MOCP"""
         return run_command("mocp -i")
 
     @staticmethod
     def set_volume(volume: str) -> None:
+        """
+        Set volume in MOCP.
+        Volume must be between 0 and 100.
+        """
         run_command(f"mocp -v {volume}")
 
     @staticmethod
     def get_volume() -> int:
+        """Get volume from pactl."""
         return int(
             run_command(
                 r"""pactl list sinks | grep '^[[:space:]]Volume:' | \
@@ -129,7 +139,7 @@ def set_volume():
     if request.json is not None:
         volume = request.json.get("volume", "0")
         MocpControler.set_volume(volume)
-        return redirect(url_for("index"))
+    return redirect(url_for("index"))
 
 
 infos = MocpInfos.from_infos()
