@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
-    <link href="/static/css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
   </head>
   <body>
     <div class="background">
@@ -48,14 +48,15 @@
             </form>
           </div>
         </div>
-        <div id="progress_bar">
-          <div id="bar"></div>
-        </div>
-        <div class="slider_container">
+        <div class="volume_slider_container">
           <i class="fa fa-volume-down"></i>
           <input type="range" min="1" max="100"
             value="{{ infos.volume }}" class="volume_slider" onchange="sendVolume()">
           <i class="fa fa-volume-up"></i>
+        </div>
+        <div id="progress_bar_background">
+          <div id="progress_bar_colored">
+          </div>
         </div>
       </div>
     </div>
@@ -64,6 +65,9 @@
       var current_time = {{ infos.current_time|int }};
 
       let volume_slider = document.querySelector(".volume_slider");
+      let progress_bar_colored = document.getElementById("progress_bar_colored");
+      let progress_bar_background = document.getElementById("progress_bar_background");
+      progress_bar_background.onclick = sendSeek;
 
       function sendVolume() {
         var xhr = new XMLHttpRequest();
@@ -73,9 +77,25 @@
       }
 
       function updateBar() {
-        let elem = document.getElementById("bar");
-        let width = 100 * (current_time / total_time) + "%";
-        elem.style.width = width;
+        let width = 100 * (current_time / total_time);
+        progress_bar_colored.style.width = width + "%";
+      }
+
+      function getSeek(event) {
+        const x_click = event.clientX;
+        const position = progress_bar_background.getBoundingClientRect();
+        const x_min = position.left;
+        const x_max = position.right;
+        const seek = Math.round((x_click - x_min) / (x_max - x_min) * 100);
+        return seek;
+      }
+
+      function sendSeek(event) {
+        const seek = getSeek(event);
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "/set_seek", true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send(JSON.stringify({seek: seek}));
       }
 
       updateBar();

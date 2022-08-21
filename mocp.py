@@ -96,6 +96,12 @@ class MocpControler:
         run_command(f"mocp -v {volume}")
 
     @staticmethod
+    def set_seek(seek: str) -> None:
+        """Set a seek percentage position in current song."""
+        stdout = run_command(f"mocp -j {seek}%")
+        print(stdout)
+
+    @staticmethod
     def get_volume() -> int:
         """Get volume from pactl."""
         return int(
@@ -139,6 +145,14 @@ def set_volume():
     if request.json is not None:
         volume = request.json.get("volume", "0")
         MocpControler.set_volume(volume)
+    return redirect(url_for("index"))
+
+
+@app.route("/set_seek", methods=["POST"])
+def set_seek():
+    if request.json is not None:
+        seek = request.json.get("seek", "0")
+        MocpControler.set_seek(seek)
     return redirect(url_for("index"))
 
 
